@@ -30,6 +30,7 @@ export default function TimeFormInput<T extends FieldValues>({
                 value={value ?? new Date()}
                 mode="time"
                 minuteInterval={30}
+                themeVariant="light"
                 onChange={(_, selectedDate) => {
                   onChange(selectedDate);
                 }}

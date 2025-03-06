@@ -7,14 +7,14 @@ export default function TimeList() {
   const timeSlots = generateTimeSlots();
 
   return (
-    <View className="w-14 border-r">
+    <View className="w-14 border-r border-gray-300">
       {timeSlots.map((time) => (
-        <Text
+        <View
+          className="h-[60px] border-y border-gray-300"
           key={time.toLocaleTimeString()}
-          className="h-[60px] justify-center items-center border-b border-gray-300"
         >
-          {format(time, "HH:mm")}
-        </Text>
+          <Text className="top-1/3 left-1">{format(time, "HH:mm")}</Text>
+        </View>
       ))}
     </View>
   );

@@ -18,10 +18,7 @@ export default function Index() {
     day,
   });
 
-  const completed = useMemo(
-    () => tasks?.filter((x) => x.isDone).length ?? 0,
-    [tasks]
-  );
+  const completed = tasks?.filter((x) => x.isDone).length ?? 0;
 
   return (
     <SafeAreaView className="flex-1 bg-white">
