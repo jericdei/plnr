@@ -14,11 +14,13 @@ import migrations from "@/db/drizzle/migrations";
 import "react-native-reanimated";
 import "../global.css";
 
-import { useColorScheme } from "@/components/useColorScheme";
-import { db } from "@/db";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { database, db } from "@/db";
 import { Text, View } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CurrentWeekProvider } from "@/providers/week";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import { openDatabaseSync } from "expo-sqlite";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -36,6 +38,8 @@ SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
+  useDrizzleStudio(database);
+
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -80,8 +84,8 @@ function RootLayoutNav() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <QueryClientProvider client={queryClient}>
         <CurrentWeekProvider>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -91,7 +95,7 @@ function RootLayoutNav() {
             />
           </Stack>
         </CurrentWeekProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }

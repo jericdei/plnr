@@ -7,18 +7,29 @@ import { useGetTasksQuery } from "@/hooks/task";
 import { useCurrentWeek } from "@/providers/week";
 import TaskCard from "@/components/task/task-card";
 import { generateTimeSlots } from "@/utils/time";
-import { differenceInHours, format, formatDistance } from "date-fns";
+import { format } from "date-fns";
+import DayToggleHeader from "@/components/day-toggle-header";
 
 export default function Index() {
-  const { week } = useCurrentWeek();
-  const { data: tasks = [], refetch } = useGetTasksQuery({ weekId: week.id });
+  const { week, day, setDay } = useCurrentWeek();
   const timeSlots = generateTimeSlots();
+
+  const { data: tasks, refetch } = useGetTasksQuery({
+    weekId: week.id,
+    day,
+  });
 
   return (
     <SafeAreaView className="flex-1 bg-white">
       <WeekToggleHeader onWeekChange={() => refetch()} />
+      <DayToggleHeader
+        onDayChange={(val) => {
+          setDay(val);
+          refetch();
+        }}
+      />
 
-      <View className="flex-1 mt-16 px-4">
+      <View className="flex-1 mt-4 px-4">
         <ScrollView>
           <View className="flex-row">
             <View className="w-14 border-r">
@@ -33,10 +44,9 @@ export default function Index() {
             </View>
 
             <View className="flex-1 relative">
-              {tasks.length > 0 &&
-                tasks.map((task) => {
-                  return <TaskCard key={task.id} task={task} />;
-                })}
+              {tasks?.map((task) => {
+                return <TaskCard key={task.id} task={task} />;
+              })}
             </View>
           </View>
         </ScrollView>
@@ -45,7 +55,9 @@ export default function Index() {
       <View>
         <Button
           className="w-16 rounded-full aspect-square mx-auto"
-          onPress={() => router.push(`/modal?weekId=${week.id}`)}
+          onPress={() =>
+            router.push(`/modal?weekId=${week.id}&day=${day.getDate()}`)
+          }
         >
           <Ionicons name="add" size={24} />
         </Button>

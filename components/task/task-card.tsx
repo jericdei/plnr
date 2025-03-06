@@ -30,7 +30,7 @@ export default function TaskCard({ task }: TaskCardProps) {
 
   const invalidateTasksQuery = async () => {
     await queryClient.invalidateQueries({
-      queryKey: [TASKS_QUERY_KEY, task.weekId],
+      queryKey: [TASKS_QUERY_KEY],
     });
   };
 
@@ -69,7 +69,7 @@ export default function TaskCard({ task }: TaskCardProps) {
     ]);
   };
 
-  const today = startOfDay(new Date());
+  const today = startOfDay(task.from);
   const startMinutes = differenceInMinutes(task.from, today);
   const durationMinutes = differenceInMinutes(task.to, task.from);
   const top = (startMinutes / MINUTES_IN_DAY) * (24 * HOUR_HEIGHT);
@@ -84,30 +84,29 @@ export default function TaskCard({ task }: TaskCardProps) {
       }}
     >
       <View className="flex-row items-center justify-between w-full self-start">
-        <Text className="font-bold">{task.title}</Text>
-
         <View>
+          <Text className="font-bold">{task.title}</Text>
           <Text>{`${format(task.from, "h:mm a")} - ${format(
             task.to,
             "h:mm a"
           )}`}</Text>
         </View>
-      </View>
 
-      <View className="flex flex-row gap-1 items-center">
-        <Checkbox
-          color={colors.indigo[400]}
-          value={isChecked}
-          onValueChange={handleCheckboxChange}
-        />
+        <View className="flex flex-row gap-1 items-center">
+          <Checkbox
+            color={colors.indigo[400]}
+            value={isChecked}
+            onValueChange={handleCheckboxChange}
+          />
 
-        <Button
-          onPress={handleDelete}
-          color="transparent"
-          className="aspect-square rounded-full"
-        >
-          <Ionicons name="trash" size={24} color="red" />
-        </Button>
+          <Button
+            onPress={handleDelete}
+            color="transparent"
+            className="aspect-square rounded-full"
+          >
+            <Ionicons name="trash" size={24} color="red" />
+          </Button>
+        </View>
       </View>
     </View>
   );

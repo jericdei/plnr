@@ -11,16 +11,24 @@ import { db } from "@/db";
 import { tasks } from "@/db/schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { TASKS_QUERY_KEY } from "@/hooks/task";
+import { formatTimestamp } from "@/utils/time";
+import { createTask } from "@/services/task.service";
 
 export default function ModalScreen() {
-  const { weekId } = useLocalSearchParams<{ weekId: string }>();
+  const { weekId, day } = useLocalSearchParams<{
+    weekId: string;
+    day: string;
+  }>();
+
   const queryClient = useQueryClient();
 
-  const { control, handleSubmit } = useForm<TaskSchema>({
+  const today = new Date();
+
+  const { control, handleSubmit, setError } = useForm<TaskSchema>({
     defaultValues: {
       title: "",
-      from: new Date(),
-      to: new Date(),
+      from: new Date(today.getFullYear(), today.getMonth(), parseInt(day)),
+      to: new Date(today.getFullYear(), today.getMonth(), parseInt(day)),
       weekId,
     },
     resolver: zodResolver(taskSchema),
@@ -28,7 +36,7 @@ export default function ModalScreen() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await db.insert(tasks).values(values).execute();
+      await createTask(values);
 
       await queryClient.invalidateQueries({
         queryKey: [TASKS_QUERY_KEY, weekId],
@@ -36,29 +44,40 @@ export default function ModalScreen() {
 
       router.dismiss();
     } catch (err) {
-      console.error("ERRORRR >>> ", err);
+      if (err instanceof Error) {
+        setError("from", {
+          message: err.message,
+        });
+      }
     }
   });
 
   return (
-    <View className="flex-1 items-center justify-center">
+    <View className="flex-1 items-center justify-center bg-white">
       <ModalStatusBar />
 
       <Text className="text-xl font-bold">Add Task</Text>
 
       <View className="mt-16 w-full px-8 flex flex-col gap-8">
         <TextFormInput name="title" control={control} placeholder="Title" />
+
         <View className="flex flex-row justify-between">
-          <TimeFormInput name="from" control={control} label="Start" />
-          <TimeFormInput name="to" control={control} label="End" />
+          <TimeFormInput
+            className="w-1/2"
+            name="from"
+            control={control}
+            label="Start"
+          />
+          <TimeFormInput
+            className="w-1/2"
+            name="to"
+            control={control}
+            label="End"
+          />
         </View>
 
         <Button onPress={onSubmit}>Submit</Button>
       </View>
     </View>
   );
-}
-
-function InputContainer({ children }: { children: React.ReactNode }) {
-  return <View className="flex flex-row items-center gap-4">{children}</View>;
 }

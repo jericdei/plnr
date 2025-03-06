@@ -13,8 +13,8 @@ const button = tv({
       transparent: ["bg-transparent"],
     },
     size: {
-      small: ["py-1", "px-2"],
-      medium: ["py-2", "px-4"],
+      small: ["py-2", "px-2"],
+      medium: ["py-3", "px-4"],
     },
     text: {
       base: "text-center font-semibold",
