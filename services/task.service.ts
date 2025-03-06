@@ -2,7 +2,7 @@ import { db } from "@/db";
 import { tasks } from "@/db/schema";
 import { formatTimestamp } from "@/utils/time";
 import { areIntervalsOverlapping, format } from "date-fns";
-import { sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 interface CreateTaskValues {
   weekId: string;
@@ -21,7 +21,13 @@ export async function getTasks(weekId: string, day: Date) {
   });
 }
 
-export async function createTask(values: CreateTaskValues) {
+export async function getTask(id: number) {
+  return await db.query.tasks.findFirst({
+    where: (tasks, { eq }) => eq(tasks.id, id),
+  });
+}
+
+export async function upsertTask(values: CreateTaskValues, id?: string) {
   const currentTasks = await getTasks(values.weekId, values.from);
 
   const overlapping = currentTasks.some((task) =>
@@ -31,16 +37,23 @@ export async function createTask(values: CreateTaskValues) {
     )
   );
 
-  if (overlapping) {
+  if (!id && overlapping) {
     throw new Error("Cannot create task. The time intervals are overlapping.");
   }
 
-  await db
-    .insert(tasks)
-    .values({
-      ...values,
-      from: formatTimestamp(values.from),
-      to: formatTimestamp(values.to),
-    })
-    .execute();
+  const data = {
+    ...values,
+    from: formatTimestamp(values.from),
+    to: formatTimestamp(values.to),
+    updatedAt: sql`CURRENT_TIMESTAMP`,
+  };
+
+  const action = id
+    ? db
+        .update(tasks)
+        .set(data)
+        .where(eq(tasks.id, parseInt(id)))
+    : db.insert(tasks).values(data);
+
+  return await action.execute();
 }

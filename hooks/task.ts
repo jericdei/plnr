@@ -1,4 +1,4 @@
-import { getTasks } from "@/services/task.service";
+import { getTask, getTasks } from "@/services/task.service";
 import { useQuery } from "@tanstack/react-query";
 
 interface QueryParams {
@@ -7,11 +7,24 @@ interface QueryParams {
 }
 
 export const TASKS_QUERY_KEY = "tasks";
+export const TASK_QUERY_KEY = "task";
 
 export function useGetTasksQuery({ weekId, day }: QueryParams) {
   return useQuery({
     enabled: !!weekId && !!day,
     queryKey: [TASKS_QUERY_KEY, weekId, day.getDate()],
     queryFn: () => getTasks(weekId, day),
+  });
+}
+
+export function useGetTaskQuery(id?: string) {
+  if (!id) {
+    return { data: undefined };
+  }
+
+  return useQuery({
+    enabled: !!id,
+    queryKey: [TASK_QUERY_KEY, id],
+    queryFn: () => getTask(parseInt(id)),
   });
 }

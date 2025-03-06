@@ -1,5 +1,5 @@
 import { Task, tasks } from "@/db/schema";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
 import Button from "../button/button";
 import { db } from "@/db";
 import { eq } from "drizzle-orm";
@@ -15,6 +15,9 @@ import {
   format,
   startOfDay,
 } from "date-fns";
+import { router } from "expo-router";
+import { parseUrl } from "@/utils/url";
+import { ModalParams } from "@/types/params";
 
 interface TaskCardProps {
   task: Task;
@@ -76,16 +79,28 @@ export default function TaskCard({ task }: TaskCardProps) {
   const height = (durationMinutes / MINUTES_IN_DAY) * (24 * HOUR_HEIGHT);
 
   return (
-    <View
+    <TouchableOpacity
       className="absolute left-1 right-1 bg-indigo-200 rounded p-2 flex flex-col items-center justify-between border border-indigo-300"
       style={{
         top,
         height,
       }}
+      onPress={() =>
+        router.push(
+          parseUrl<ModalParams>("/modal", {
+            id: task.id.toString(),
+            day: new Date(task.from).getDate().toString(),
+            weekId: task.weekId,
+          })
+        )
+      }
     >
       <View className="flex-row items-center justify-between w-full self-start">
         <View>
-          <Text className="font-bold">{task.title}</Text>
+          <Text className="font-bold max-w-[15rem]" numberOfLines={1}>
+            {task.title}
+          </Text>
+
           <Text>{`${format(task.from, "h:mm a")} - ${format(
             task.to,
             "h:mm a"
@@ -108,6 +123,6 @@ export default function TaskCard({ task }: TaskCardProps) {
           </Button>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }

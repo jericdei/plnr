@@ -7,28 +7,32 @@ import { router, useLocalSearchParams } from "expo-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import TextFormInput from "@/components/form/text-form-input";
 import TimeFormInput from "@/components/form/time-form-input";
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
 import { useQueryClient } from "@tanstack/react-query";
-import { TASKS_QUERY_KEY } from "@/hooks/task";
-import { formatTimestamp } from "@/utils/time";
-import { createTask } from "@/services/task.service";
+import { TASKS_QUERY_KEY, useGetTaskQuery } from "@/hooks/task";
+import { upsertTask } from "@/services/task.service";
+import { ModalParams } from "@/types/params";
+
+const today = new Date();
+
+function format(day: string, date?: string) {
+  if (!date) {
+    return new Date(today.getFullYear(), today.getMonth(), parseInt(day));
+  }
+
+  return new Date(date);
+}
 
 export default function ModalScreen() {
-  const { weekId, day } = useLocalSearchParams<{
-    weekId: string;
-    day: string;
-  }>();
-
+  const { weekId, day, id } = useLocalSearchParams<ModalParams>();
   const queryClient = useQueryClient();
 
-  const today = new Date();
+  const { data: task } = useGetTaskQuery(id);
 
   const { control, handleSubmit, setError } = useForm<TaskSchema>({
-    defaultValues: {
-      title: "",
-      from: new Date(today.getFullYear(), today.getMonth(), parseInt(day)),
-      to: new Date(today.getFullYear(), today.getMonth(), parseInt(day)),
+    values: {
+      title: task?.title ?? "",
+      from: format(day, task?.from),
+      to: format(day, task?.to),
       weekId,
     },
     resolver: zodResolver(taskSchema),
@@ -36,15 +40,17 @@ export default function ModalScreen() {
 
   const onSubmit = handleSubmit(async (values) => {
     try {
-      await createTask(values);
+      await upsertTask(values, id);
 
       await queryClient.invalidateQueries({
-        queryKey: [TASKS_QUERY_KEY, weekId],
+        queryKey: [TASKS_QUERY_KEY, weekId, parseInt(day)],
+        exact: true,
       });
 
       router.dismiss();
     } catch (err) {
       if (err instanceof Error) {
+        console.error(err);
         setError("from", {
           message: err.message,
         });

@@ -9,6 +9,8 @@ import DayToggleHeader from "@/components/day-toggle-header";
 import TimeList from "@/components/time-list";
 import TaskList from "@/components/task/task-list";
 import { useMemo } from "react";
+import { parseUrl } from "@/utils/url";
+import { ModalParams } from "@/types/params";
 
 export default function Index() {
   const { week, day, setDay } = useCurrentWeek();
@@ -49,7 +51,12 @@ export default function Index() {
         <Button
           className="w-16 rounded-full aspect-square mx-auto"
           onPress={() =>
-            router.push(`/modal?weekId=${week.id}&day=${day.getDate()}`)
+            router.push(
+              parseUrl<ModalParams>("/modal", {
+                day: day.getDate().toString(),
+                weekId: week.id,
+              })
+            )
           }
         >
           <Ionicons name="add" size={24} />
