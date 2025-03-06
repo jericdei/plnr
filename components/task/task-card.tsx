@@ -18,12 +18,13 @@ import {
 import { router } from "expo-router";
 import { parseUrl } from "@/utils/url";
 import { ModalParams } from "@/types/params";
+import { cn } from "@/utils/cn";
 
 interface TaskCardProps {
   task: Task;
 }
 
-const HOUR_HEIGHT = 60;
+const HOUR_HEIGHT = 80;
 const MINUTES_IN_DAY = 1440;
 
 export default function TaskCard({ task }: TaskCardProps) {
@@ -78,6 +79,8 @@ export default function TaskCard({ task }: TaskCardProps) {
   const top = (startMinutes / MINUTES_IN_DAY) * (24 * HOUR_HEIGHT);
   const height = (durationMinutes / MINUTES_IN_DAY) * (24 * HOUR_HEIGHT);
 
+  const twoLines = durationMinutes > 30;
+
   return (
     <TouchableOpacity
       className="absolute left-1 right-1 bg-indigo-200 rounded p-2 flex flex-col items-center justify-between border border-indigo-300"
@@ -95,8 +98,13 @@ export default function TaskCard({ task }: TaskCardProps) {
         )
       }
     >
-      <View className="flex-row items-center justify-between w-full self-start">
-        <View>
+      <View className="flex-row justify-between w-full">
+        <View
+          className={cn(
+            "flex-row items-center gap-4",
+            twoLines && "flex-col items-start gap-0"
+          )}
+        >
           <Text className="font-bold max-w-[15rem]" numberOfLines={1}>
             {task.title}
           </Text>
@@ -107,7 +115,7 @@ export default function TaskCard({ task }: TaskCardProps) {
           )}`}</Text>
         </View>
 
-        <View className="flex flex-row gap-1 items-center">
+        <View className="flex flex-row items-center gap-1">
           <Checkbox
             color={colors.indigo[400]}
             value={isChecked}
@@ -117,7 +125,9 @@ export default function TaskCard({ task }: TaskCardProps) {
           <Button
             onPress={handleDelete}
             color="transparent"
+            size="extraSmall"
             className="aspect-square rounded-full"
+            textClassName="size-6"
           >
             <Ionicons name="trash" size={24} color="red" />
           </Button>

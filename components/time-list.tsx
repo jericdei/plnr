@@ -10,7 +10,7 @@ export default function TimeList() {
     <View className="w-14 border-r border-gray-300">
       {timeSlots.map((time) => (
         <View
-          className="h-[60px] border-y border-gray-300"
+          className="h-[80px] border-y border-gray-300"
           key={time.toLocaleTimeString()}
         >
           <Text className="top-1/3 left-1">{format(time, "HH:mm")}</Text>

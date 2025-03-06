@@ -23,7 +23,7 @@ export default function Index() {
   const completed = tasks?.filter((x) => x.isDone).length ?? 0;
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative">
       <WeekToggleHeader onWeekChange={() => refetch()} />
       <DayToggleHeader
         onDayChange={(val) => {
@@ -47,21 +47,19 @@ export default function Index() {
         </ScrollView>
       </View>
 
-      <View>
-        <Button
-          className="w-16 rounded-full aspect-square mx-auto"
-          onPress={() =>
-            router.push(
-              parseUrl<ModalParams>("/modal", {
-                day: day.getDate().toString(),
-                weekId: week.id,
-              })
-            )
-          }
-        >
-          <Ionicons name="add" size={24} />
-        </Button>
-      </View>
+      <Button
+        className="w-16 rounded-full absolute aspect-square bottom-16 right-4"
+        onPress={() =>
+          router.push(
+            parseUrl<ModalParams>("/modal", {
+              day: day.getDate().toString(),
+              weekId: week.id,
+            })
+          )
+        }
+      >
+        <Ionicons name="add" size={24} />
+      </Button>
     </SafeAreaView>
   );
 }

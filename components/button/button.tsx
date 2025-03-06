@@ -13,7 +13,8 @@ const button = tv({
       transparent: ["bg-transparent"],
     },
     size: {
-      small: ["py-2", "px-2"],
+      extraSmall: ["p-1"],
+      small: ["p-2"],
       medium: ["py-3", "px-4"],
     },
     text: {
@@ -38,6 +39,7 @@ export interface ButtonProps extends ComponentProps<typeof TouchableOpacity> {
   size?: ButtonSizes;
   children: React.ReactNode;
   disabled?: boolean;
+  textClassName?: string;
 }
 
 export default function Button({
@@ -45,12 +47,17 @@ export default function Button({
   size = "medium",
   children,
   className,
+  textClassName,
   ...props
 }: ButtonProps) {
   return (
     <TouchableOpacity className={button({ color, size, className })} {...props}>
       <Text
-        className={cn(button.variants.text.base, button.variants.text[color])}
+        className={cn(
+          button.variants.text.base,
+          button.variants.text[color],
+          textClassName
+        )}
       >
         {children}
       </Text>

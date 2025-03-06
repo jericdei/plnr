@@ -1,6 +1,6 @@
 import Button from "@/components/button/button";
 import ModalStatusBar from "@/components/modal-status-bar";
-import { Text, View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 import { useForm } from "react-hook-form";
 import { taskSchema, TaskSchema } from "@/validations/taskSchema";
 import { router, useLocalSearchParams } from "expo-router";
@@ -59,10 +59,15 @@ export default function ModalScreen() {
   });
 
   return (
-    <View className="flex-1 items-center justify-center bg-white">
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1 items-center justify-center bg-white"
+    >
       <ModalStatusBar />
 
-      <Text className="text-xl font-bold">Add Task</Text>
+      <Text className="text-xl font-bold">
+        {id ? "Edit" : "Create New"} Task
+      </Text>
 
       <View className="mt-16 w-full px-8 flex flex-col gap-8">
         <TextFormInput name="title" control={control} placeholder="Title" />
@@ -84,6 +89,6 @@ export default function ModalScreen() {
 
         <Button onPress={onSubmit}>Submit</Button>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
