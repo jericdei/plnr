@@ -5,19 +5,23 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useGetTasksQuery } from "@/hooks/task";
 import { useCurrentWeek } from "@/providers/week";
-import TaskCard from "@/components/task/task-card";
-import { generateTimeSlots } from "@/utils/time";
-import { format } from "date-fns";
 import DayToggleHeader from "@/components/day-toggle-header";
+import TimeList from "@/components/time-list";
+import TaskList from "@/components/task/task-list";
+import { useMemo } from "react";
 
 export default function Index() {
   const { week, day, setDay } = useCurrentWeek();
-  const timeSlots = generateTimeSlots();
 
   const { data: tasks, refetch } = useGetTasksQuery({
     weekId: week.id,
     day,
   });
+
+  const completed = useMemo(
+    () => tasks?.filter((x) => x.isDone).length ?? 0,
+    [tasks]
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -29,25 +33,17 @@ export default function Index() {
         }}
       />
 
+      <View className="justify-center mt-4">
+        <Text className="text-center font-bold">
+          {completed} / {tasks?.length} tasks completed
+        </Text>
+      </View>
+
       <View className="flex-1 mt-4 px-4">
         <ScrollView>
           <View className="flex-row">
-            <View className="w-14 border-r">
-              {timeSlots.map((time) => (
-                <Text
-                  key={time.toLocaleTimeString()}
-                  className="h-[60px] justify-center items-center border-b border-gray-300"
-                >
-                  {format(time, "HH:mm")}
-                </Text>
-              ))}
-            </View>
-
-            <View className="flex-1 relative">
-              {tasks?.map((task) => {
-                return <TaskCard key={task.id} task={task} />;
-              })}
-            </View>
+            <TimeList />
+            <TaskList tasks={tasks} />
           </View>
         </ScrollView>
       </View>
@@ -65,10 +61,3 @@ export default function Index() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-});
