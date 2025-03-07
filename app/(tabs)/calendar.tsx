@@ -42,7 +42,7 @@ export default function Index() {
         className="w-16 rounded-full absolute aspect-square bottom-8 right-4"
         onPress={() =>
           router.push(
-            parseUrl<ModalParams>("/modal", {
+            parseUrl<ModalParams>("/task-form-modal", {
               day: day.getDate().toString(),
               weekId: week.id,
             })

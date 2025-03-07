@@ -22,7 +22,7 @@ function format(day: string, date?: string) {
   return new Date(date);
 }
 
-export default function ModalScreen() {
+export default function TaskFormModalScreen() {
   const { weekId, day, id } = useLocalSearchParams<ModalParams>();
   const queryClient = useQueryClient();
 
@@ -61,7 +61,7 @@ export default function ModalScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 items-center justify-center bg-white"
+      className="items-center justify-center bg-white pt-16"
     >
       <ModalStatusBar />
 

@@ -90,7 +90,7 @@ export default function TaskCard({ task }: TaskCardProps) {
       }}
       onPress={() =>
         router.push(
-          parseUrl<ModalParams>("/modal", {
+          parseUrl<ModalParams>("/task-form-modal", {
             id: task.id.toString(),
             day: new Date(task.from).getDate().toString(),
             weekId: task.weekId,
