@@ -31,6 +31,9 @@ yarn-error.*
 
 # local env files
 .env*.local
+.xcode.env.local
 
 # typescript
 *.tsbuildinfo
+
+credentials.json

@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 import WeekToggleHeader from "@/components/week-toggle-header";
 import Button from "@/components/button/button";
 import { Ionicons } from "@expo/vector-icons";
@@ -8,7 +8,6 @@ import { useCurrentWeek } from "@/providers/week";
 import DayToggleHeader from "@/components/day-toggle-header";
 import TimeList from "@/components/time-list";
 import TaskList from "@/components/task/task-list";
-import { useMemo } from "react";
 import { parseUrl } from "@/utils/url";
 import { ModalParams } from "@/types/params";
 
