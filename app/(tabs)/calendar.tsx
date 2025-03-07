@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import { SafeAreaView, Text, View } from "react-native";
 import WeekToggleHeader from "@/components/week-toggle-header";
 import Button from "@/components/button/button";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,10 +6,9 @@ import { router } from "expo-router";
 import { useGetTasksQuery } from "@/hooks/task";
 import { useCurrentWeek } from "@/providers/week";
 import DayToggleHeader from "@/components/day-toggle-header";
-import TimeList from "@/components/time-list";
-import TaskList from "@/components/task/task-list";
 import { parseUrl } from "@/utils/url";
 import { ModalParams } from "@/types/params";
+import TaskScrollView from "@/components/task/task-scroll-view";
 
 export default function Index() {
   const { week, day, setDay } = useCurrentWeek();
@@ -37,17 +36,10 @@ export default function Index() {
         </Text>
       </View>
 
-      <View className="flex-1 mt-4 px-4">
-        <ScrollView>
-          <View className="flex-row">
-            <TimeList />
-            <TaskList tasks={tasks} />
-          </View>
-        </ScrollView>
-      </View>
+      <TaskScrollView tasks={tasks} />
 
       <Button
-        className="w-16 rounded-full absolute aspect-square bottom-16 right-4"
+        className="w-16 rounded-full absolute aspect-square bottom-8 right-4"
         onPress={() =>
           router.push(
             parseUrl<ModalParams>("/modal", {
