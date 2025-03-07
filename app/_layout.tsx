@@ -1,9 +1,5 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -20,7 +16,7 @@ import { Text, View } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CurrentWeekProvider } from "@/providers/week";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
-import { openDatabaseSync } from "expo-sqlite";
+import { DefaultTheme } from "@/constants/theme";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -34,6 +30,11 @@ export const unstable_settings = {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 
 const queryClient = new QueryClient();
 
@@ -64,7 +65,6 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   const { success, error } = useMigrations(db, migrations);
 
   if (error) {
@@ -96,6 +96,9 @@ function RootLayoutNav() {
                 headerShown: false,
                 sheetGrabberVisible: true,
                 sheetAllowedDetents: [0.4, 1.0],
+                contentStyle: {
+                  backgroundColor: "white",
+                },
               }}
             />
           </Stack>

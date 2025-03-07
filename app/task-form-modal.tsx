@@ -61,7 +61,7 @@ export default function TaskFormModalScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="items-center justify-center bg-white pt-16"
+      className="items-center justify-center bg-white pt-8"
     >
       <ModalStatusBar />
 
@@ -69,7 +69,7 @@ export default function TaskFormModalScreen() {
         {id ? "Edit" : "Create New"} Task
       </Text>
 
-      <View className="mt-16 w-full px-8 flex flex-col gap-8">
+      <View className="mt-8 w-full px-8 flex flex-col gap-8">
         <TextFormInput name="title" control={control} placeholder="Title" />
 
         <View className="flex flex-row justify-between">

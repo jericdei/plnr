@@ -9,6 +9,7 @@ import DayToggleHeader from "@/components/day-toggle-header";
 import { parseUrl } from "@/utils/url";
 import { ModalParams } from "@/types/params";
 import TaskScrollView from "@/components/task/task-scroll-view";
+import TaskFormButton from "@/components/button/task-form-button";
 
 export default function Index() {
   const { week, day, setDay } = useCurrentWeek();
@@ -37,20 +38,7 @@ export default function Index() {
       </View>
 
       <TaskScrollView tasks={tasks} />
-
-      <Button
-        className="w-16 rounded-full absolute aspect-square bottom-8 right-4"
-        onPress={() =>
-          router.push(
-            parseUrl<ModalParams>("/task-form-modal", {
-              day: day.getDate().toString(),
-              weekId: week.id,
-            })
-          )
-        }
-      >
-        <Ionicons name="add" size={24} />
-      </Button>
+      <TaskFormButton />
     </SafeAreaView>
   );
 }
