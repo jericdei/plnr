@@ -41,7 +41,7 @@ export default function TabBar({
 
   return (
     <View
-      className="flex-row absolute bottom-8 justify-between items-center bg-indigo-50 py-2 rounded-full mx-32 shadow"
+      className="flex-row absolute bottom-8 justify-between items-center bg-indigo-50 py-2 rounded-full mx-16 shadow"
       onLayout={onTabBarLayout}
     >
       <Animated.View
@@ -70,8 +70,8 @@ export default function TabBar({
           iconName = "home";
         }
 
-        if (route.name === "task-form-modal") {
-          iconName = "add-circle";
+        if (route.name === "courses") {
+          iconName = "folder";
         }
 
         const isFocused = state.index === index;

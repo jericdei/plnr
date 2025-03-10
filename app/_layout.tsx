@@ -17,6 +17,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { CurrentWeekProvider } from "@/providers/week";
 import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { DefaultTheme } from "@/constants/theme";
+import { ProfileProvider } from "@/providers/profile";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -86,23 +87,32 @@ function RootLayoutNav() {
   return (
     <ThemeProvider value={DefaultTheme}>
       <QueryClientProvider client={queryClient}>
-        <CurrentWeekProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="task-form-modal"
-              options={{
-                presentation: "formSheet",
-                headerShown: false,
-                sheetGrabberVisible: true,
-                sheetAllowedDetents: [0.4, 1.0],
-                contentStyle: {
-                  backgroundColor: "white",
-                },
-              }}
-            />
-          </Stack>
-        </CurrentWeekProvider>
+        <ProfileProvider>
+          <CurrentWeekProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="task-form-modal"
+                options={{
+                  presentation: "formSheet",
+                  headerShown: false,
+                  sheetGrabberVisible: true,
+                  sheetAllowedDetents: [0.4, 1.0],
+                  contentStyle: {
+                    backgroundColor: "white",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="profile/edit"
+                options={{
+                  title: "Edit ID",
+                  headerBackButtonDisplayMode: "minimal",
+                }}
+              />
+            </Stack>
+          </CurrentWeekProvider>
+        </ProfileProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

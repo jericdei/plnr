@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import TextFormInput from "@/components/form/text-form-input";
 import TimeFormInput from "@/components/form/time-form-input";
 import { useQueryClient } from "@tanstack/react-query";
-import { TASKS_QUERY_KEY, useGetTaskQuery } from "@/hooks/task";
+import { TASK_QUERY_KEY, TASKS_QUERY_KEY, useGetTaskQuery } from "@/hooks/task";
 import { upsertTask } from "@/services/task.service";
 import { ModalParams } from "@/types/params";
 
@@ -43,7 +43,10 @@ export default function TaskFormModalScreen() {
       await upsertTask(values, id);
 
       await queryClient.invalidateQueries({
-        queryKey: [TASKS_QUERY_KEY, weekId, parseInt(day)],
+        queryKey: [
+          [TASKS_QUERY_KEY, weekId, parseInt(day)],
+          [TASK_QUERY_KEY, "upcoming", weekId, parseInt(day)],
+        ],
         exact: true,
       });
 
@@ -70,7 +73,7 @@ export default function TaskFormModalScreen() {
       </Text>
 
       <View className="mt-8 w-full px-8 flex flex-col gap-8">
-        <TextFormInput name="title" control={control} placeholder="Title" />
+        <TextFormInput name="title" control={control} label="Title" />
 
         <View className="flex flex-row justify-between">
           <TimeFormInput

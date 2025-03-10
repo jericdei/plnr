@@ -36,6 +36,13 @@
       "when": 1741272880981,
       "tag": "0004_free_mojo",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1741577274487,
+      "tag": "0005_supreme_purple_man",
+      "breakpoints": true
     }
   ]
 }

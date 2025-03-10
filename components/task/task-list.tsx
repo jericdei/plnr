@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import React from "react";
-import TaskCard from "@/components/task/task-card";
+import TaskListCard from "@/components/task/task-list-card";
 import { Task } from "@/db/schema";
 
 interface TaskListProps {
@@ -11,7 +11,7 @@ export default function TaskList({ tasks }: TaskListProps) {
   return (
     <View className="flex-1 relative">
       {tasks?.map((task) => {
-        return <TaskCard key={task.id} task={task} />;
+        return <TaskListCard key={task.id} task={task} />;
       })}
     </View>
   );

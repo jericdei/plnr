@@ -1,3 +1,4 @@
+import { currentTimestamp } from "@/constants/drizzle";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
 import { formatTimestamp } from "@/utils/time";
@@ -19,6 +20,21 @@ export async function getTasks(weekId: string, day: Date) {
         eq(sql`strftime('%d', date(${tasks.from}))`, format(day, "dd"))
       ),
   });
+}
+
+export async function getUpcomingTask(weekId: string, day: Date) {
+  const task = await db.query.tasks.findFirst({
+    where: (tasks, { gte, eq, and }) =>
+      and(
+        eq(tasks.weekId, weekId),
+        eq(sql`strftime('%d', date(${tasks.from}))`, format(day, "dd")),
+        gte(sql`time(${tasks.from})`, sql`time(CURRENT_TIMESTAMP)`),
+        eq(tasks.isDone, false)
+      ),
+    orderBy: tasks.from,
+  });
+
+  return task ?? null;
 }
 
 export async function getTask(id: number) {
@@ -45,7 +61,7 @@ export async function upsertTask(values: CreateTaskValues, id?: string) {
     ...values,
     from: formatTimestamp(values.from),
     to: formatTimestamp(values.to),
-    updatedAt: sql`CURRENT_TIMESTAMP`,
+    updatedAt: currentTimestamp,
   };
 
   const action = id
@@ -56,4 +72,8 @@ export async function upsertTask(values: CreateTaskValues, id?: string) {
     : db.insert(tasks).values(data);
 
   return await action.execute();
+}
+
+export async function deleteTask(id: number) {
+  return await db.delete(tasks).where(eq(tasks.id, id)).execute();
 }

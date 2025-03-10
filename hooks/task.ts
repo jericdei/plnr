@@ -1,4 +1,5 @@
-import { getTask, getTasks } from "@/services/task.service";
+import { useCurrentWeek } from "@/providers/week";
+import { getTask, getTasks, getUpcomingTask } from "@/services/task.service";
 import { useQuery } from "@tanstack/react-query";
 
 interface QueryParams {
@@ -26,5 +27,14 @@ export function useGetTaskQuery(id?: string) {
     enabled: !!id,
     queryKey: [TASK_QUERY_KEY, id],
     queryFn: () => getTask(parseInt(id)),
+  });
+}
+
+export function useGetUpcomingTaskQuery() {
+  const { week, day } = useCurrentWeek();
+
+  return useQuery({
+    queryKey: [TASK_QUERY_KEY, "upcoming", week.id, day],
+    queryFn: () => getUpcomingTask(week.id, day),
   });
 }
